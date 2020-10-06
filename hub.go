@@ -1,16 +1,22 @@
 package main
 
+import (
+	"log"
+
+	"github.com/gorilla/websocket"
+)
+
 type Hub struct {
-	clients map[*Client] bool
+	clients []*Client
 	register chan *Client
-	broadcast chan []byte
+	broadcast chan *Broadcast
 }
 
 func CreateHub () *Hub {
 	return &Hub{
-		clients: make(map[*Client] bool),
+		clients: make([]*Client, 0),
 		register: make(chan *Client),
-		broadcast: make(chan []byte),
+		broadcast: make(chan *Broadcast),
 	}
 
 }
@@ -19,13 +25,27 @@ func (hub *Hub) Run () {
 	for {
 		select {
 			case client := <- hub.register:
-				hub.clients[client] = true
+				hub.clients = append(hub.clients, client)
+				writer, err := client.connection.NextWriter(websocket.TextMessage)
 
-			case message := <- hub.broadcast:
-					for client := range hub.clients {
-						client.send <- message
+				if err != nil {
+					log.Print(err.Error())
+				}
 
+				i, err := writer.Write([]byte("Welcome!"))
+
+				if err != nil {
+					log.Print(i)
+					log.Print(err.Error())
+				}
+
+			case broadcast := <- hub.broadcast:
+				for _, client := range hub.clients {
+					if client != broadcast.from {
+						client.send <- broadcast.message
 					}
+				}
+
 		}
 	}
 }

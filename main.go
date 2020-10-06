@@ -7,8 +7,6 @@ import (
 )
 
 var (
-	clients = make(map[*websocket.Conn] bool)
-
 	upgrader = websocket.Upgrader{
 		CheckOrigin: func (r *http.Request) bool {
 			return true

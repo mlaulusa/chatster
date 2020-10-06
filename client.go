@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	heartbeatTick = 10 * time.Second
+	heartbeatTick = 60 * time.Second
 
 	writeDeadline = 10 * time.Second
 
@@ -54,7 +54,12 @@ func (c *Client) read () {
 
 		log.Print(string(message))
 
-		c.hub.broadcast <- bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
+		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
+
+		c.hub.broadcast <- &Broadcast{
+			from: c,
+			message: message,
+		}
 
 	}
 }
@@ -83,14 +88,18 @@ func (c *Client) write () {
 			writer, err := c.connection.NextWriter(websocket.TextMessage)
 
 			if err != nil {
+				log.Print(err)
 				return
 			}
 
+			log.Print("Sending message: " + string(message))
 			writer.Write(message)
 
-			for bufferedMessage := range c.send {
+			messageCount := len(c.send)
+
+			for i := 0; i < messageCount; i++ {
 				writer.Write(newline)
-				writer.Write(bufferedMessage)
+				writer.Write(<-c.send)
 			}
 
 			if err := writer.Close(); err != nil {
