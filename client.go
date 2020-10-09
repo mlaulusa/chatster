@@ -30,7 +30,7 @@ type Client struct {
 
 func NewClient (hub *Hub, connection *websocket.Conn) *Client {
 	connection.SetPongHandler(func (appData string) error {
-		log.Print("Received pong message")
+		log.Print("pong")
 		return nil
 	})
 
@@ -51,8 +51,6 @@ func (c *Client) read () {
 			}
 			break
 		}
-
-		log.Print(string(message))
 
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
 
@@ -92,7 +90,6 @@ func (c *Client) write () {
 				return
 			}
 
-			log.Print("Sending message: " + string(message))
 			writer.Write(message)
 
 			messageCount := len(c.send)
@@ -107,7 +104,7 @@ func (c *Client) write () {
 			}
 
 			case <- heartbeat.C:
-				log.Print("Sending ping message")
+				log.Print("ping")
 				c.connection.SetWriteDeadline(time.Now().Add(writeDeadline))
 				if err := c.connection.WriteMessage(websocket.PingMessage, nil); err != nil {
 					return

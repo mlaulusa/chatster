@@ -39,6 +39,10 @@ func (hub *Hub) Run () {
 					log.Print(err.Error())
 				}
 
+				if err := writer.Close(); err != nil {
+					return
+				}
+
 			case broadcast := <- hub.broadcast:
 				for _, client := range hub.clients {
 					if client != broadcast.from {

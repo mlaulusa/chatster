@@ -39,13 +39,14 @@ func handleWebSocket (hub *Hub) func (w http.ResponseWriter, r *http.Request) {
 }
 
 func main () {
-	fs := http.FileServer(http.Dir("./public/build"))
+	react := http.FileServer(http.Dir("./public/react"))
 
 	hub := CreateHub()
 
 	go hub.Run()
 
-	http.Handle("/", fs)
+	http.Handle("/react", react)
+	http.Handle("/", react)
 
 	http.HandleFunc("/ws", handleWebSocket(hub))
 
