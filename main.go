@@ -39,7 +39,7 @@ func handleWebSocket (hub *Hub) func (w http.ResponseWriter, r *http.Request) {
 }
 
 func main () {
-	react := http.FileServer(http.Dir("./public/react"))
+	react := http.FileServer(http.Dir("./static/react"))
 
 	hub := CreateHub()
 

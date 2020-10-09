@@ -23,7 +23,7 @@
     "build": "react-scripts build && npm run move",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "move": "rimraf ../public/react/ && ncp ./build ../public/react/ && rimraf ./build"
+    "move": "rimraf ../static/react/ && ncp ./build ../static/react/ && rimraf ./build"
   },
   "eslintConfig": {
     "extends": "react-app"
