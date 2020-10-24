@@ -3,7 +3,7 @@ import MessageList from './MessageList'
 import Input from './Input'
 import Creator from './state/Creator'
 import { AppContext } from './state/Provider'
-import useChatWebSocket from './useChatWebSocket'
+import useRoomWebSocket from './hooks/useRoomWebSocket'
 import Message from './Message'
 
 interface props {
@@ -14,8 +14,7 @@ const ChatRoom: React.FunctionComponent<props> = ({ name }) => {
 
   const { state: { id }, dispatch } = useContext(AppContext)
 
-  const send = useChatWebSocket()
-
+  const send = useRoomWebSocket(name)
 
   const onSubmit = useCallback((value: string) => {
     const message: Message = new Message(id, value, name)

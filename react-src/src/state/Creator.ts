@@ -8,7 +8,11 @@ export default class Creator {
   }
 
   static receiveMessage (message: Message) {
-    return new Action (TYPE.RECEIVE_MESSAGE, message)
+    return new Action(TYPE.RECEIVE_MESSAGE, message)
+  }
+
+  static setRooms (rooms: Array<Room>) {
+    return new Action(TYPE.SET_ROOMS, rooms)
   }
 
 }

@@ -8,7 +8,7 @@ interface messageJson {
   time: string
 }
 
-export default class Message {
+export default class Message implements messageJson {
 
   static fromJSON (json: Object): Message {
 
@@ -41,7 +41,11 @@ export default class Message {
     return this._room
   }
 
-  get time (): DateTime {
+  get time (): string {
+    return this._isoDateTime
+  }
+
+  get dateTime (): DateTime {
     return DateTime.fromISO(this._isoDateTime)
   }
 

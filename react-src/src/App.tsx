@@ -3,6 +3,7 @@ import map from 'lodash/map'
 import './App.css'
 import { AppContext } from './state/Provider'
 import ChatRoom from './ChatRoom'
+import useFetchRooms from './hooks/useFetchRooms'
 
 interface props {
 
@@ -11,11 +12,15 @@ interface props {
 const App: React.FunctionComponent<props> = () => {
   const { state: { rooms } } = useContext(AppContext)
 
-  return (
-    <>
-      {map(rooms, room => <ChatRoom name={room} />)}
-    </>
-  )
+  const pending = useFetchRooms()
+
+  return pending
+    ? (<p>Loading</p>)
+    : (
+      <>
+        {map(rooms, ({ id, name }) => <ChatRoom key={id} name={name} />)}
+      </>
+    )
 }
 
 export default App

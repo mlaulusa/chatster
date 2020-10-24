@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
-import Message from './Message'
-import { AppContext } from './state/Provider'
-import Creator from './state/Creator'
+import Message from '../Message'
+import { AppContext } from '../state/Provider'
+import Creator from '../state/Creator'
 
 function serializeMessage (message: Message): string {
 
@@ -13,14 +13,14 @@ function deserializeMessage (message: string): Message {
   return Message.fromJSON(JSON.parse(message))
 }
 
-export default function useChatWebSocket () {
+export default function useRoomWebSocket (room: string = 'global') {
 
   const { dispatch } = useContext(AppContext)
   const [webSocket, setWebSocket] = useState<WebSocket>()
 
   useEffect(() => {
 
-    const socket = new WebSocket('ws://localhost:3000/ws')
+    const socket = new WebSocket(`ws://localhost:3000/room/${room}`)
 
     function onOpen () {
       setWebSocket(socket)

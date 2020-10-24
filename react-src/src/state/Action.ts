@@ -13,4 +13,5 @@ export default class Action {
 export const TYPE = {
   ADD_MESSAGE: 'ADD_MESSAGE',
   RECEIVE_MESSAGE: 'RECEIVE_MESSAGE',
+  SET_ROOMS: 'SET_ROOMS',
 }
