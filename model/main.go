@@ -10,7 +10,7 @@ const (
 	host     = "localhost"
 	port     = 5432
 	user     = "chatster"
-	password = "lewsther1n"
+	password = "chatster"
 	database = "chatster"
 )
 

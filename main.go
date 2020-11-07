@@ -8,6 +8,7 @@ import (
 
 	"github.com/mlaulusa/chatster/model"
 	"github.com/mlaulusa/chatster/route"
+	"github.com/mlaulusa/chatster/socket"
 )
 
 var (
@@ -22,7 +23,7 @@ func upgrade(w http.ResponseWriter, r *http.Request) (*websocket.Conn, error) {
 	return upgrader.Upgrade(w, r, nil)
 }
 
-func handleMessages(hub *Hub) func(w http.ResponseWriter, r *http.Request) {
+func handleMessages(hub *socket.Hub) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		ws, err := upgrade(w, r)
@@ -32,12 +33,14 @@ func handleMessages(hub *Hub) func(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		client := NewClient(hub, ws)
+		client := socket.NewClient(hub, ws)
 
-		hub.register <- client
+		room := hub.GetRoom("lazy")
 
-		go client.read()
-		go client.write()
+		room.Register <- client
+
+		go client.Read()
+		go client.Write()
 
 	}
 }
@@ -48,15 +51,13 @@ func main() {
 
 	react := http.FileServer(http.Dir("./static/react"))
 
-	hub := CreateHub()
-
-	go hub.Run()
+	hub := socket.CreateHub()
 
 	// router.HandleFunc("/room/{room}", handleWebSocket(hub))
 	// router.HandleFunc("/ws", handleWebSocket(hub))
 
 	http.Handle("/room", route.GetRoomRouter())
-	// http.HandleFunc("/ws", handleWebSocket(hub))
+	http.HandleFunc("/ws", handleMessages(hub))
 
 	http.Handle("/react", react)
 	http.Handle("/", react)

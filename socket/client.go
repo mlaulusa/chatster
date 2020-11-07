@@ -1,4 +1,4 @@
-package main
+package socket
 
 import (
 	"bytes"
@@ -41,7 +41,7 @@ func NewClient (hub *Hub, connection *websocket.Conn) *Client {
 	}
 }
 
-func (c *Client) read () {
+func (c *Client) Read () {
 	for {
 		_, message, err := c.connection.ReadMessage()
 
@@ -62,7 +62,7 @@ func (c *Client) read () {
 	}
 }
 
-func (c *Client) write () {
+func (c *Client) Write() {
 
 	heartbeat := time.NewTicker(heartbeatTick)
 

@@ -1,4 +1,4 @@
-package main
+package socket
 
 type Broadcast struct {
 	from *Client
